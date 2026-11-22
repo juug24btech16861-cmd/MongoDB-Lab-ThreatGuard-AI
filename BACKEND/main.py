@@ -1,4 +1,4 @@
-
+from BACKEND.database import initialize_database
 from fastapi import (
     FastAPI,
     HTTPException,
@@ -30,6 +30,9 @@ from BACKEND.database import (
 # -----------------------------------------
 
 app = FastAPI(title="ThreatGuard AI")
+@app.on_event("startup")
+def startup_event():
+    initialize_database()
 
 security = HTTPBearer()
 

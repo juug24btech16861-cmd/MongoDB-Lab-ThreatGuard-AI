@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pydantic
+pymongo
+requests
+python-dotenv
+streamlit
+pandas
+plotly
+reportlab

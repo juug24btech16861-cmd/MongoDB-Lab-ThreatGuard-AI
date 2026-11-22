@@ -1,4 +1,4 @@
-
+import os
 from pymongo import MongoClient, ASCENDING
 from pymongo.errors import DuplicateKeyError
 from datetime import datetime, timezone
@@ -11,7 +11,7 @@ import hmac
 # MONGODB CONNECTION
 # --------------------------------
 
-MONGO_URL = "mongodb://localhost:27017/"
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
 
 client = MongoClient(
     MONGO_URL,
