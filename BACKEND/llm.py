@@ -7,25 +7,40 @@ load_dotenv()
 
 OLLAMA_URL = os.getenv(
     "OLLAMA_BASE_URL",
-    "http://localhost:11434"
+    "http://127.0.0.1:11434"
 )
 
-MODEL = os.getenv("LLM_MODEL", "llama3.2:3b")
+MODEL = os.getenv("LLM_MODEL", "qwen2.5:7b")
 
 
 def generate_answer(messages):
-    response = requests.post(
-        f"{OLLAMA_URL}/api/chat",
-        json={
-            "model": MODEL,
-            "messages": messages,
-            "stream": False
-        },
-        timeout=180
-    )
 
-    response.raise_for_status()
-    result = response.json()
+    try:
+        response = requests.post(
+            f"{OLLAMA_URL}/api/chat",
+            json={
+                "model": MODEL,
+                "messages": messages,
+                "stream": False,
+                "options": {
+                    "temperature": 0.7,
+                    "num_predict": 1500
+                }
+            },
+            timeout=(10, 240)
+        )
 
-    return result["message"]["content"]
+        response.raise_for_status()
 
+        result = response.json()
+
+        return result["message"]["content"]
+
+    except requests.exceptions.Timeout:
+        return "The AI is taking too long to respond. Please try again."
+
+    except requests.exceptions.ConnectionError:
+        return "Cannot connect to Ollama. Please check whether Ollama is running."
+
+    except requests.exceptions.RequestException as error:
+        return f"AI service error: {str(error)}"
